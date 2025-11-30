@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String  @id @default(cuid())
+  username  String
+  email     String? @unique
+  avatarUrl String?
+
+  createdAt DateTime @default(now())
+
+  gamesAsX   Game[]     @relation("PlayerX")
+  gamesAsO   Game[]     @relation("PlayerO")
+  spectators Spectate[]
+}
+
+model Game {
+  id String @id @default(cuid())
+
+  type GameType @default(MULTIPLAYER)
+
+  playerXId String?
+  playerX   User?   @relation("PlayerX", fields: [playerXId], references: [id])
+
+  playerOId String?
+  playerO   User?   @relation("PlayerO", fields: [playerOId], references: [id])
+
+  board  Json
+  result GameResult @default(ONGOING)
+
+  spectators Spectate[]
+
+  moves Move[]
+
+  isPublic   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  finishedAt DateTime?
+}
+
+model Move {
+  id     String @id @default(cuid())
+  gameId String
+  game   Game   @relation(fields: [gameId], references: [id])
+
+  index      Int
+  player     Player
+  moveNumber Int
+
+  createdAt DateTime @default(now())
+}
+
+model Spectate {
+  id     String  @id @default(cuid())
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  gameId String
+  game   Game   @relation(fields: [gameId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+enum GameType {
+  CPU
+  MULTIPLAYER
+}
+
+enum GameResult {
+  X
+  O
+  DRAW
+  ONGOING
+}
+
+enum Player {
+  X
+  O
+}
