@@ -1,19 +1,43 @@
 import express from "express";
-import cors from "cors";
 import dotenv from "dotenv";
-import bodyParser, { json, urlencoded } from "body-parser";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 import morgan from "morgan";
+import passport from "passport";
+import authRouter from "./routes/auth";
+import { initPassport } from "./passport";
 
 dotenv.config();
-const PORT = process.env.PORT || 3001;
 
 const app = express();
 
-app
-  .disable("x-powered-by")
-  .use(morgan("dev"))
-  .use(cors())
-  .use(bodyParser.json())
-  .use(bodyParser.urlencoded({ extended: true }));
+const PORT = process.env.PORT || 3001;
+const allowedHosts = process.env.ALLOWED_HOSTS?.split(",") || [];
 
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+app.disable("x-powered-by");
+
+app.use(
+  cors({
+    origin: allowedHosts,
+    credentials: true,
+  })
+);
+
+app.use(morgan("dev"));
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// initialize passport
+app.use(passport.initialize());
+initPassport();
+
+// auth routes
+app.use("/api/auth", authRouter);
+
+app.get("/", (req, res) => {
+  res.send("Backend is running fine");
+});
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

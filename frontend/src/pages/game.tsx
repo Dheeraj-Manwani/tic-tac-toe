@@ -3,12 +3,13 @@ import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ProfileMenu } from "@/components/ProfileMenu";
 
 export default function Game() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 relative overflow-hidden z-10">
       {/* Background Elements */}
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[hsl(260,100%,65%)] opacity-20 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-[hsl(180,100%,50%)] opacity-10 blur-[120px] rounded-full pointer-events-none" />
@@ -27,6 +28,16 @@ export default function Game() {
           <ArrowLeft className="h-5 w-5 mr-2" />
           Back
         </Button>
+      </motion.div>
+
+      {/* Profile Menu */}
+      <motion.div
+        initial={{ x: 50, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="absolute top-6 right-6 z-20"
+      >
+        <ProfileMenu />
       </motion.div>
       <motion.div
         initial={{ y: -50, opacity: 0 }}

@@ -4,12 +4,18 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Game from "@/pages/game";
 import Home from "@/pages/home";
+import BattleLogs from "@/pages/battle-logs";
 import NotFound from "@/pages/not-found";
+import { AppInitializer } from "@/components/AppInitializer";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/battle-logs",
+    element: <BattleLogs />,
   },
   {
     path: "/:id",
@@ -23,6 +29,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AppInitializer>
+      <RouterProvider router={router} />
+    </AppInitializer>
   </StrictMode>
 );
